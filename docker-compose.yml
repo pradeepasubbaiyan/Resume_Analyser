@@ -1,21 +1,19 @@
-version: '3.9'
-
 services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: verityhire
-      POSTGRES_USER: verityhire
-      POSTGRES_PASSWORD: verityhire
+      POSTGRES_DB: ${POSTGRES_DB:-verityhire}
+      POSTGRES_USER: ${POSTGRES_USER:-verityhire}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     ports:
-      - '5432:5432'
+      - '127.0.0.1:5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
   redis:
     image: redis:7-alpine
     ports:
-      - '6379:6379'
+      - '127.0.0.1:6379:6379'
 
   api:
     build: ./backend
@@ -23,11 +21,12 @@ services:
     volumes:
       - ./backend:/app
     ports:
-      - '8000:8000'
+      - '127.0.0.1:8000:8000'
     environment:
-      DATABASE_URL: postgresql+psycopg://verityhire:verityhire@postgres:5432/verityhire
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-verityhire}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-verityhire}
       REDIS_URL: redis://redis:6379/0
       APP_ENV: development
+      ALLOWED_ORIGINS: http://127.0.0.1:5175,http://localhost:5175
     depends_on:
       - postgres
       - redis

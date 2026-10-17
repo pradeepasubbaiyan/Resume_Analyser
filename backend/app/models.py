@@ -29,7 +29,7 @@ class CandidateProfile(Base):
     __tablename__ = 'candidate_profiles'
 
     id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id: Mapped[str] = mapped_column(ForeignKey('users.id'), unique=True)
+    user_id: Mapped[str | None] = mapped_column(ForeignKey('users.id'), unique=True, nullable=True)
     target_role: Mapped[str | None] = mapped_column(String, nullable=True)
     summary: Mapped[str | None] = mapped_column(Text, nullable=True)
     experience_years: Mapped[int | None] = mapped_column(Integer, nullable=True)
@@ -38,7 +38,7 @@ class CandidateProfile(Base):
     portfolio_url: Mapped[str | None] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
-    user: Mapped[User] = relationship(back_populates='candidate_profile')
+    user: Mapped[User | None] = relationship(back_populates='candidate_profile')
     applications: Mapped[list['Application']] = relationship(back_populates='candidate_profile')
     extracted_claims: Mapped[list['ExtractedClaim']] = relationship(back_populates='candidate_profile')
     skill_evidence: Mapped[list['SkillEvidence']] = relationship(back_populates='candidate_profile')
@@ -264,7 +264,9 @@ class IntegrityEvent(Base):
     session_id: Mapped[str | None] = mapped_column(String, nullable=True)
     event_type: Mapped[str] = mapped_column(String, nullable=False)
     severity: Mapped[str] = mapped_column(String, default='info')
+    confidence: Mapped[float] = mapped_column(Float, default=0.5)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    review_status: Mapped[str] = mapped_column(String, default='unreviewed')
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
@@ -299,6 +301,29 @@ class FinalReport(Base):
     recommendation: Mapped[str] = mapped_column(String, default='more_evidence_required')
     summary: Mapped[str | None] = mapped_column(Text, nullable=True)
     generated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class RoleFitReport(Base):
+    __tablename__ = 'role_fit_reports'
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    candidate_profile_id: Mapped[str] = mapped_column(ForeignKey('candidate_profiles.id'), index=True)
+    job_id: Mapped[str] = mapped_column(ForeignKey('jobs.id'))
+    score: Mapped[float] = mapped_column(Float, nullable=False)
+    threshold: Mapped[float] = mapped_column(Float, default=60)
+    evidence_json: Mapped[dict] = mapped_column(JSON, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class RecruitmentPolicy(Base):
+    __tablename__ = 'recruitment_policies'
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default='default')
+    screening_threshold: Mapped[float] = mapped_column(Float, default=60)
+    question_count: Mapped[int] = mapped_column(Integer, default=6)
+    max_minutes_per_question: Mapped[int] = mapped_column(Integer, default=5)
+    retention_days: Mapped[int] = mapped_column(Integer, default=90)
+    role_weights_json: Mapped[dict] = mapped_column(JSON, default=dict)
 
 
 class AuditLog(Base):

@@ -226,13 +226,16 @@ def get_demo_payload() -> dict:
         'interview': {
             'session_id': 'interview-demo-01',
             'status': 'ready',
-            'question_count': 25,
-            'max_response_minutes': 5,
-            'expected_duration_minutes': 70,
+            'question_count': 6,
+            'max_response_minutes': 4,
+            'expected_duration_minutes': 36,
             'questions': [
-                {'id': 'q-1', 'category': 'technical', 'question_text': 'Explain the most important business problem your last product feature solved.', 'evidence_target': 'product ownership', 'position': 1},
-                {'id': 'q-2', 'category': 'technical', 'question_text': 'Describe the data model decisions behind a dashboard you shipped and how you validated success.', 'evidence_target': 'analytics', 'position': 2},
-                {'id': 'q-3', 'category': 'behavioral', 'question_text': 'Tell me about a time you had to adapt a feature after feedback changed your assumptions.', 'evidence_target': 'adaptability', 'position': 3},
+                {'id': 'q-1', 'category': 'hard skill', 'question_text': 'Choose a real project relevant to this role. Walk through one technical decision you personally made, the alternatives you considered, and how you verified the result.', 'evidence_target': 'technical depth and ownership', 'position': 1},
+                {'id': 'q-2', 'category': 'soft skill', 'question_text': 'In that project or another specific example, describe a moment when a teammate or stakeholder disagreed with your approach. What did you do, and what changed as a result?', 'evidence_target': 'communication and collaboration', 'position': 2},
+                {'id': 'q-3', 'category': 'hard skill', 'question_text': 'Suppose the service you described suddenly became ten times busier and response times tripled. How would you investigate the bottleneck, and what would you change first?', 'evidence_target': 'debugging and system design', 'position': 3},
+                {'id': 'q-4', 'category': 'soft skill', 'question_text': 'Tell me about a time requirements were unclear or changed late. How did you clarify priorities, communicate trade-offs, and decide what to deliver?', 'evidence_target': 'judgment and adaptability', 'position': 4},
+                {'id': 'q-5', 'category': 'hard skill', 'question_text': 'A production change causes a data inconsistency for some users. Describe how you would contain the impact, find the cause, and safely verify a fix.', 'evidence_target': 'reliability and practical problem solving', 'position': 5},
+                {'id': 'q-6', 'category': 'soft skill', 'question_text': 'Describe a piece of difficult feedback that changed how you work. What specific behavior did you change, and how do you know the change helped?', 'evidence_target': 'self-awareness and learning', 'position': 6},
             ],
         },
         'dashboard': {
